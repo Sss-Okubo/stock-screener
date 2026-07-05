@@ -1,0 +1,32 @@
+# 株式スクリーナー設定
+universe:
+  japan: nikkei225        # nikkei225 のみ対応(将来拡張用)
+  us: sp500               # sp500 のみ対応
+  limit: null             # テスト用: 各市場の銘柄数を制限 (null = 全銘柄)
+
+data:
+  db_path: data/stock.db
+  price_period: "13mo"    # テクニカル計算用の株価取得期間
+  fundamentals_cache_days: 3   # 財務データのキャッシュ有効日数
+  prices_cache_days: 1         # 株価データのキャッシュ有効日数
+
+scoring:
+  # 重み合計は 1.0 にすること (バリュー・クオリティ重視の配分)
+  weights:
+    value: 0.35       # PER / PBR (割安度)
+    quality: 0.25     # ROE / 営業利益率
+    growth: 0.15      # 売上成長率 / EPS成長率
+    trend: 0.10       # 50日/200日移動平均との乖離
+    momentum: 0.10    # 3ヶ月リターン / MACD
+    volume: 0.05      # 出来高トレンド
+  rsi_overbought: 75  # このRSIを超えたらペナルティ
+  rsi_penalty: 0.5    # ペナルティ量 (zスコア換算)
+
+report:
+  top_n: 10           # 総合ランキング表示数
+  top_n_per_market: 5 # 市場別ランキング表示数
+  output_dir: reports
+
+notify:
+  # Discord Webhook URL は環境変数 DISCORD_WEBHOOK_URL に設定する
+  enabled: true

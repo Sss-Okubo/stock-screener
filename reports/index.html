@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>銘柄スクリーニング 2026-07-05</title>
+</head>
+<body style="margin:0">
+<style>
+:root {
+  --page: #f9f9f7; --surface: #fcfcfb;
+  --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --ring: rgba(11,11,11,0.10);
+  --bar: #2a78d6; --bar-track: #f0efec;
+  --pos: #2a78d6; --neg: #e34948; --mid: #e1e0d9;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #0d0d0d; --surface: #1a1a19;
+    --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --ring: rgba(255,255,255,0.10);
+    --bar: #3987e5; --bar-track: #262624;
+    --pos: #3987e5; --neg: #e66767; --mid: #383835;
+  }
+}
+:root[data-theme="light"] {
+  --page: #f9f9f7; --surface: #fcfcfb;
+  --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --ring: rgba(11,11,11,0.10);
+  --bar: #2a78d6; --bar-track: #f0efec;
+  --pos: #2a78d6; --neg: #e34948; --mid: #e1e0d9;
+}
+:root[data-theme="dark"] {
+  --page: #0d0d0d; --surface: #1a1a19;
+  --ink: #ffffff; --ink-2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --ring: rgba(255,255,255,0.10);
+  --bar: #3987e5; --bar-track: #262624;
+  --pos: #3987e5; --neg: #e66767; --mid: #383835;
+}
+.scr {
+  font-family: system-ui, -apple-system, "Segoe UI", "Yu Gothic UI",
+               "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+  background: var(--page); color: var(--ink);
+  margin: 0; padding: 2.5rem 1.25rem 3rem;
+  line-height: 1.6;
+}
+.scr .wrap { max-width: 62rem; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
+.scr header h1 { font-size: 1.45rem; font-weight: 700; margin: 0; letter-spacing: .01em; text-wrap: balance; }
+.scr header .date { color: var(--ink-2); font-size: .95rem; margin-top: .2rem; }
+.scr .stats { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
+.scr .stat {
+  background: var(--surface); border: 1px solid var(--ring); border-radius: 6px;
+  padding: .5rem .9rem; min-width: 6.5rem;
+}
+.scr .stat .k { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.scr .stat .v { font-size: 1.25rem; font-weight: 650; }
+.scr .weights { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .75rem; }
+.scr .weights .chip {
+  font-size: .78rem; color: var(--ink-2); border: 1px solid var(--grid);
+  border-radius: 999px; padding: .1rem .6rem; background: var(--surface);
+}
+.scr section h2 { font-size: 1.05rem; font-weight: 650; margin: 0 0 .6rem; }
+.scr section .note { font-size: .8rem; color: var(--muted); margin: -.3rem 0 .6rem; }
+.scr .tblwrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--ring); border-radius: 8px; }
+.scr table { border-collapse: collapse; width: 100%; font-size: .88rem; font-variant-numeric: tabular-nums; }
+.scr th {
+  text-align: right; font-size: .72rem; color: var(--muted); font-weight: 600;
+  letter-spacing: .06em; padding: .55rem .7rem; border-bottom: 1px solid var(--grid);
+  white-space: nowrap;
+}
+.scr th.l, .scr td.l { text-align: left; }
+.scr td { padding: .45rem .7rem; border-bottom: 1px solid var(--grid); text-align: right; white-space: nowrap; }
+.scr tr:last-child td { border-bottom: none; }
+.scr td.name { max-width: 14rem; overflow: hidden; text-overflow: ellipsis; }
+.scr .mkt {
+  display: inline-block; font-size: .72rem; font-weight: 600; letter-spacing: .05em;
+  border: 1px solid var(--grid); border-radius: 4px; padding: 0 .35rem; color: var(--ink-2);
+}
+.scr .new { color: var(--pos); font-size: .72rem; font-weight: 700; margin-left: .3rem; }
+.scr .scorecell { display: flex; align-items: center; gap: .55rem; justify-content: flex-end; }
+.scr .scorebar { width: 90px; height: 8px; background: var(--bar-track); border-radius: 4px; overflow: hidden; }
+.scr .scorebar i { display: block; height: 100%; background: var(--bar); border-radius: 4px; }
+.scr .zcell { display: flex; align-items: center; gap: .45rem; justify-content: flex-end; }
+.scr .zbar { position: relative; width: 72px; height: 8px; background: var(--bar-track); border-radius: 4px; }
+.scr .zbar::after {
+  content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px;
+  width: 1px; background: var(--mid);
+}
+.scr .zbar i { position: absolute; top: 0; height: 100%; border-radius: 4px; }
+.scr .zbar i.p { left: 50%; background: var(--pos); }
+.scr .zbar i.n { right: 50%; background: var(--neg); }
+.scr .zval { min-width: 3.2rem; color: var(--ink-2); font-size: .82rem; }
+.scr .two { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+@media (min-width: 58rem) { .scr .two { grid-template-columns: 1fr 1fr; } }
+.scr footer { color: var(--muted); font-size: .8rem; border-top: 1px solid var(--grid); padding-top: 1rem; }
+</style>
+<div class="scr"><div class="wrap">
+<header>
+  <h1>銘柄スクリーニング結果</h1>
+  <div class="date">2026-07-05 実行</div>
+  <div class="stats">
+    <div class="stat"><div class="k">対象銘柄</div><div class="v">723</div></div>
+    <div class="stat"><div class="k">日本株</div><div class="v">223</div></div>
+    <div class="stat"><div class="k">米国株</div><div class="v">500</div></div>
+  </div>
+  <div class="weights"><span class="chip">割安 35%</span><span class="chip">収益性 25%</span><span class="chip">成長 15%</span><span class="chip">トレンド 10%</span><span class="chip">勢い 10%</span><span class="chip">出来高 5%</span></div>
+</header>
+<section>
+  <h2>総合トップ10</h2>
+  <div class="tblwrap"><table><thead><tr><th>順位</th><th class="l">ティッカー</th><th class="l">銘柄名</th><th class="l">市場</th><th>スコア</th><th>PER</th><th>ROE</th><th>配当</th><th>3ヶ月</th><th>RSI</th></tr></thead><tbody><tr><td>1</td><td class="l"><strong>MU</strong></td><td class="l name">Micron Technology</td><td class="l"><span class="mkt">US</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:95%"></i></span><strong>95.2</strong></div></td><td>22.1</td><td>66.6%</td><td>0.05%</td><td>+166.4%</td><td>48</td></tr><tr><td>2</td><td class="l"><strong>GEN</strong></td><td class="l name">Gen Digital</td><td class="l"><span class="mkt">US</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:78%"></i></span><strong>78.1</strong></div></td><td>17.0</td><td>39.9%</td><td>1.87%</td><td>+41.9%</td><td>66</td></tr><tr><td>3</td><td class="l"><strong>8795.T</strong></td><td class="l name">Ｔ＆Ｄ</td><td class="l"><span class="mkt">JP</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:78%"></i></span><strong>77.6</strong></div></td><td>17.7</td><td>9.6%</td><td>3.31%</td><td>+20.4%</td><td>65</td></tr><tr><td>4</td><td class="l"><strong>SPG</strong></td><td class="l name">Simon Property Group</td><td class="l"><span class="mkt">US</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:76%"></i></span><strong>76.4</strong></div></td><td>15.7</td><td>113.6%</td><td>3.89%</td><td>+21.1%</td><td>67</td></tr><tr><td>5</td><td class="l"><strong>8411.T</strong></td><td class="l name">みずほＦＧ</td><td class="l"><span class="mkt">JP</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:76%"></i></span><strong>76.0</strong></div></td><td>16.1</td><td>11.4%</td><td>1.86%</td><td>+25.7%</td><td>61</td></tr><tr><td>6</td><td class="l"><strong>EQT</strong></td><td class="l name">EQT Corporation</td><td class="l"><span class="mkt">US</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:75%"></i></span><strong>74.9</strong></div></td><td>10.0</td><td>13.4%</td><td>1.25%</td><td>-11.6%</td><td>46</td></tr><tr><td>7</td><td class="l"><strong>NVDA</strong></td><td class="l name">Nvidia</td><td class="l"><span class="mkt">US</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:72%"></i></span><strong>72.3</strong></div></td><td>29.8</td><td>114.3%</td><td>0.51%</td><td>+10.0%</td><td>41</td></tr><tr><td>8</td><td class="l"><strong>8331.T</strong></td><td class="l name">千葉銀</td><td class="l"><span class="mkt">JP</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:72%"></i></span><strong>72.0</strong></div></td><td>19.9</td><td>7.8%</td><td>2.40%</td><td>+25.9%</td><td>70</td></tr><tr><td>9</td><td class="l"><strong>WDC</strong></td><td class="l name">Western Digital</td><td class="l"><span class="mkt">US</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:72%"></i></span><strong>71.5</strong></div></td><td>32.3</td><td>85.9%</td><td>0.11%</td><td>+82.8%</td><td>44</td></tr><tr><td>10</td><td class="l"><strong>8316.T</strong></td><td class="l name">三井住友ＦＧ</td><td class="l"><span class="mkt">JP</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:71%"></i></span><strong>71.2</strong></div></td><td>16.2</td><td>6.9%</td><td>1.35%</td><td>+23.8%</td><td>64</td></tr></tbody></table></div>
+</section>
+<section>
+  <h2>スコア内訳</h2>
+  <p class="note">市場内での偏差 (右向き青 = 市場平均より良い ／ 左向き赤 = 悪い、±3で頭打ち)</p>
+  <div class="tblwrap"><table><thead><tr><th class="l">ティッカー</th><th>割安</th><th>収益性</th><th>成長</th><th>トレンド</th><th>勢い</th><th>出来高</th></tr></thead><tbody><tr><td class="l"><strong>MU</strong></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:2%"></i></span><span class="zval">-0.11</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:33%"></i></span><span class="zval">+2.00</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:50%"></i></span><span class="zval">+3.00</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:35%"></i></span><span class="zval">+2.12</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:3%"></i></span><span class="zval">+0.18</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:7%"></i></span><span class="zval">+0.43</span></div></td></tr><tr><td class="l"><strong>GEN</strong></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:5%"></i></span><span class="zval">+0.31</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:26%"></i></span><span class="zval">+1.58</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:12%"></i></span><span class="zval">+0.75</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:11%"></i></span><span class="zval">+0.66</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:15%"></i></span><span class="zval">+0.87</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:17%"></i></span><span class="zval">-1.02</span></div></td></tr><tr><td class="l"><strong>8795.T</strong></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:6%"></i></span><span class="zval">+0.34</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:24%"></i></span><span class="zval">+1.46</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:13%"></i></span><span class="zval">+0.77</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:14%"></i></span><span class="zval">+0.85</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:4%"></i></span><span class="zval">-0.21</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:13%"></i></span><span class="zval">+0.81</span></div></td></tr><tr><td class="l"><strong>SPG</strong></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:1%"></i></span><span class="zval">-0.03</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:30%"></i></span><span class="zval">+1.82</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:1%"></i></span><span class="zval">+0.07</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:10%"></i></span><span class="zval">+0.62</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:5%"></i></span><span class="zval">+0.29</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:44%"></i></span><span class="zval">+2.62</span></div></td></tr><tr><td class="l"><strong>8411.T</strong></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:5%"></i></span><span class="zval">+0.33</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:15%"></i></span><span class="zval">+0.90</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:30%"></i></span><span class="zval">+1.81</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:10%"></i></span><span class="zval">+0.60</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:1%"></i></span><span class="zval">-0.08</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:0%"></i></span><span class="zval">-0.00</span></div></td></tr><tr><td class="l"><strong>EQT</strong></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:10%"></i></span><span class="zval">+0.58</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:17%"></i></span><span class="zval">+1.04</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:30%"></i></span><span class="zval">+1.83</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:13%"></i></span><span class="zval">-0.80</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:3%"></i></span><span class="zval">-0.15</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:3%"></i></span><span class="zval">-0.15</span></div></td></tr><tr><td class="l"><strong>NVDA</strong></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:9%"></i></span><span class="zval">-0.55</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:43%"></i></span><span class="zval">+2.58</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:29%"></i></span><span class="zval">+1.75</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:12%"></i></span><span class="zval">-0.72</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:7%"></i></span><span class="zval">-0.40</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:12%"></i></span><span class="zval">-0.74</span></div></td></tr><tr><td class="l"><strong>8331.T</strong></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:5%"></i></span><span class="zval">+0.30</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:20%"></i></span><span class="zval">+1.18</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:4%"></i></span><span class="zval">+0.27</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:15%"></i></span><span class="zval">+0.93</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:4%"></i></span><span class="zval">+0.26</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:0%"></i></span><span class="zval">+0.00</span></div></td></tr><tr><td class="l"><strong>WDC</strong></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:11%"></i></span><span class="zval">-0.64</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:21%"></i></span><span class="zval">+1.26</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:28%"></i></span><span class="zval">+1.68</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:24%"></i></span><span class="zval">+1.41</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:1%"></i></span><span class="zval">-0.05</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:22%"></i></span><span class="zval">+1.33</span></div></td></tr><tr><td class="l"><strong>8316.T</strong></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:6%"></i></span><span class="zval">+0.35</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:22%"></i></span><span class="zval">+1.31</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:0%"></i></span><span class="zval">+0.00</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:10%"></i></span><span class="zval">+0.61</span></div></td><td><div class="zcell"><span class="zbar"><i class="n" style="width:1%"></i></span><span class="zval">-0.07</span></div></td><td><div class="zcell"><span class="zbar"><i class="p" style="width:12%"></i></span><span class="zval">+0.71</span></div></td></tr></tbody></table></div>
+</section>
+<div class="two"><div><h2>日本株トップ5</h2><div class="tblwrap"><table><thead><tr><th>順位</th><th class="l">ティッカー</th><th class="l">銘柄名</th><th class="l">市場</th><th>スコア</th><th>PER</th><th>ROE</th><th>配当</th><th>3ヶ月</th><th>RSI</th></tr></thead><tbody><tr><td>3</td><td class="l"><strong>8795.T</strong></td><td class="l name">Ｔ＆Ｄ</td><td class="l"><span class="mkt">JP</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:78%"></i></span><strong>77.6</strong></div></td><td>17.7</td><td>9.6%</td><td>3.31%</td><td>+20.4%</td><td>65</td></tr><tr><td>5</td><td class="l"><strong>8411.T</strong></td><td class="l name">みずほＦＧ</td><td class="l"><span class="mkt">JP</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:76%"></i></span><strong>76.0</strong></div></td><td>16.1</td><td>11.4%</td><td>1.86%</td><td>+25.7%</td><td>61</td></tr><tr><td>8</td><td class="l"><strong>8331.T</strong></td><td class="l name">千葉銀</td><td class="l"><span class="mkt">JP</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:72%"></i></span><strong>72.0</strong></div></td><td>19.9</td><td>7.8%</td><td>2.40%</td><td>+25.9%</td><td>70</td></tr><tr><td>10</td><td class="l"><strong>8316.T</strong></td><td class="l name">三井住友ＦＧ</td><td class="l"><span class="mkt">JP</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:71%"></i></span><strong>71.2</strong></div></td><td>16.2</td><td>6.9%</td><td>1.35%</td><td>+23.8%</td><td>64</td></tr><tr><td>11</td><td class="l"><strong>5714.T</strong></td><td class="l name">ＤＯＷＡ</td><td class="l"><span class="mkt">JP</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:71%"></i></span><strong>71.2</strong></div></td><td>8.4</td><td>14.5%</td><td>3.83%</td><td>-0.9%</td><td>41</td></tr></tbody></table></div></div><div><h2>米国株トップ5</h2><div class="tblwrap"><table><thead><tr><th>順位</th><th class="l">ティッカー</th><th class="l">銘柄名</th><th class="l">市場</th><th>スコア</th><th>PER</th><th>ROE</th><th>配当</th><th>3ヶ月</th><th>RSI</th></tr></thead><tbody><tr><td>1</td><td class="l"><strong>MU</strong></td><td class="l name">Micron Technology</td><td class="l"><span class="mkt">US</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:95%"></i></span><strong>95.2</strong></div></td><td>22.1</td><td>66.6%</td><td>0.05%</td><td>+166.4%</td><td>48</td></tr><tr><td>2</td><td class="l"><strong>GEN</strong></td><td class="l name">Gen Digital</td><td class="l"><span class="mkt">US</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:78%"></i></span><strong>78.1</strong></div></td><td>17.0</td><td>39.9%</td><td>1.87%</td><td>+41.9%</td><td>66</td></tr><tr><td>4</td><td class="l"><strong>SPG</strong></td><td class="l name">Simon Property Group</td><td class="l"><span class="mkt">US</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:76%"></i></span><strong>76.4</strong></div></td><td>15.7</td><td>113.6%</td><td>3.89%</td><td>+21.1%</td><td>67</td></tr><tr><td>6</td><td class="l"><strong>EQT</strong></td><td class="l name">EQT Corporation</td><td class="l"><span class="mkt">US</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:75%"></i></span><strong>74.9</strong></div></td><td>10.0</td><td>13.4%</td><td>1.25%</td><td>-11.6%</td><td>46</td></tr><tr><td>7</td><td class="l"><strong>NVDA</strong></td><td class="l name">Nvidia</td><td class="l"><span class="mkt">US</span></td><td><div class="scorecell"><span class="scorebar"><i style="width:72%"></i></span><strong>72.3</strong></div></td><td>29.8</td><td>114.3%</td><td>0.51%</td><td>+10.0%</td><td>41</td></tr></tbody></table></div></div></div>
+<footer>本レポートは機械的なスクリーニング結果であり、投資助言ではありません。投資判断はご自身の責任で行ってください。データ: Yahoo Finance (yfinance)</footer>
+</div></div>
+</body>
+</html>
